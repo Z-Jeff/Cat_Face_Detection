@@ -5,16 +5,10 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import matplotlib.patches as patches
 
-train_dir = 'work/Cat_Face_Detection/dataset/train/'
-test_dir = 'work/Cat_Face_Detection/dataset/test/'
-csv_file = 'work/Cat_Face_Detection/dataset/train.csv'
 
-image_paths = os.listdir(train_dir)
-image_paths = [train_dir + path for path in image_paths]
-image_num = len(image_paths)
-print(image_num)
+# print(image_num)
 
-csv_data = pd.read_csv(csv_file)
+
 
 def get_points(path):
      image_indices = int(path.split('/')[-1].split('.')[0])
@@ -87,4 +81,17 @@ def show_points(path):
     rect = patches.Rectangle((x_min, y_min), x_max-x_min, y_max-y_min, edgecolor='r', facecolor='none')
     ax.add_patch(rect)
     plt.show()  
+  
+if __name__ == '__main__':
+    train_dir = 'work/Cat_Face_Detection/dataset/train/'
+    test_dir = 'work/Cat_Face_Detection/dataset/test/'
+    csv_file = 'work/Cat_Face_Detection/dataset/train.csv'
     
+    csv_data = pd.read_csv(csv_file)
+    
+    image_paths = os.listdir(train_dir)
+    image_paths = [train_dir + path for path in image_paths]
+    image_num = len(image_paths)
+    
+    rand = np.random.randint(0, image_num)
+    show_points(image_paths[rand]) 
