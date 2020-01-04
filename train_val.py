@@ -62,16 +62,10 @@ val_ds = tf.data.Dataset.from_tensor_slices((val_paths, val_labels))
 def load_train_data(path, labels):
     image = tf.io.read_file(path)  
     image = tf.image.decode_jpeg(image, channels=3)
-    
-    #[h, w] = [image.numpy().shape[0], image.numpy().shape[1]]
-    print('shape', tf.shape(image))
-    #for i in range(9):
-    #    labels[i*2] = labels[i*2]/w
-    #    labels[i*2+1] = labels[i*2+1]/h
-    
     image = tf.image.resize(image, [IMG_WIDTH, IMG_HEIGHT])     
     image /= 255.0
     return image, labels
+    
 def load_val_data(path, labels):
     image = tf.io.read_file(path)  
     image = tf.image.decode_jpeg(image, channels=3)
@@ -83,12 +77,14 @@ train_ds = train_ds.map(load_train_data)
 val_ds = val_ds.map(load_val_data)
 '''
 for image, label in train_ds.take(1):
-    print(image)
+    #print(image)
     print("Image shape: ", image.numpy().shape)
     print("Label: ", label.numpy())
+    print("Label shape: ", label.numpy().shape)
+os._exit(1)
 '''
 AUTOTUNE = tf.data.experimental.AUTOTUNE
-def prepare_for_training(ds, cache=True, shuffle=True, shuffle_buffer_size=500):
+def prepare_for_training(ds, cache=True, shuffle=True, shuffle_buffer_size=100):
     # This is a small dataset, only load it once, and keep it in memory.
     # use `.cache(filename)` to cache preprocessing work for datasets that don't fit in memory.
     if cache:
@@ -123,30 +119,32 @@ model = Sequential([
     Dense(512, activation='relu'),
     Dense(18)
 ])
-print(model.summary())
+#print(model.summary())
 model.compile(optimizer='adam',
               loss='mse',
-              metrics=['mse', 'mae'])
+              metrics=['mse'])
               
 ###----- Train the model -----###
 train_loss = []
 val_loss = []
 EPOCHS = 0
-history = []
 while(True):
     history = model.fit_generator(
         train_ds,
-        steps_per_epoch=train_num // BATCH_SIZE,
+        steps_per_epoch=100,#train_num // BATCH_SIZE,
         epochs=EPOCHS,
         validation_data=val_ds,
-        validation_steps=val_num // BATCH_SIZE
+        validation_steps=10,#val_num // BATCH_SIZE
     )
-    [train_loss.append(loss) for loss in history.history['loss']]
-    [val_loss.append(loss) for loss in history.history['val_loss']]
+    print(history.history.keys())
+    print(history.history.keys())
+    #[train_loss.append(loss) for loss in history.history['loss']]
+    #[val_loss.append(loss) for loss in history.history['val_loss']]
     EPOCHS = EPOCHS + CHECK_EPOCHS
     if(EPOCHS >= AIMD_EPOCHS):
         break
-    
+os._exit(1)
+
 ###----- Save the model and log -----###
 model_save_dir = './model/' + str(MODEl_INDEX) + '/'
 if not os.path.exists(model_save_dir):
