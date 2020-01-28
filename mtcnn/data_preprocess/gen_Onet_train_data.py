@@ -15,16 +15,22 @@ import mtcnn.core.vision as vision
 
 prefix_path = ''
 traindata_store = './data_set/train'
-pnet_model_file = './model_store/pnet_epoch.pt'
-rnet_model_file = './model_store/rnet_epoch.pt'
+pnet_model_file = './model_store/pnet_epoch_10.pt'
+rnet_model_file = './model_store/rnet_epoch_10.pt'
 #annotation_file = './anno_store/anno_train_test.txt'
 annotation_file = './anno_store/anno_train.txt'
 use_cuda = True
 
-det_boxs_file = './model_store/detections_1579496676.pkl'
+det_boxs_file = './model_store/detections_from_rnet.pkl'
 
 def gen_onet_data(data_dir, anno_file, pnet_model_file, rnet_model_file, prefix_path='', use_cuda=True, vis=False):
-
+    
+    if os.path.exists(det_boxs_file):
+        print('using existing %s' % det_boxs_file)
+        gen_onet_sample_data(traindata_store, annotation_file, det_boxs_file, prefix_path)
+        return
+    
+    print('generating new %s' % det_boxs_file)
 
     pnet, rnet, _ = create_mtcnn_net(p_model_path=pnet_model_file, r_model_path=rnet_model_file, use_cuda=use_cuda)
     mtcnn_detector = MtcnnDetector(pnet=pnet, rnet=rnet, min_face_size=12)
@@ -40,10 +46,14 @@ def gen_onet_data(data_dir, anno_file, pnet_model_file, rnet_model_file, prefix_
     for databatch in image_reader:
         if batch_idx % 50 == 0:
             print("%d images done" % batch_idx)
-
+        '''   
+        if batch_idx < 4850:
+            batch_idx += 1
+            continue 
+        '''
         im = databatch
 
-        t = time.time()
+        #t = time.time()
 
         # pnet detection = [x1, y1, x2, y2, score, reg]
         p_boxes, p_boxes_align = mtcnn_detector.detect_pnet(im=im)
@@ -59,8 +69,8 @@ def gen_onet_data(data_dir, anno_file, pnet_model_file, rnet_model_file, prefix_
             rgb_im = cv2.cvtColor(np.asarray(im), cv2.COLOR_BGR2RGB)
             vision.vis_two(rgb_im, boxes, boxes_align)
 
-        t1 = time.time() - t
-        t = time.time()
+        #t1 = time.time() - t
+        #t = time.time()
         all_boxes.append(boxes_align)
         batch_idx += 1
 
@@ -69,12 +79,12 @@ def gen_onet_data(data_dir, anno_file, pnet_model_file, rnet_model_file, prefix_
     if not os.path.exists(save_path):
         os.mkdir(save_path)
 
-    save_file = os.path.join(save_path, "detections_%d.pkl" % int(time.time()))
-    with open(save_file, 'wb') as f:
+    #save_file = os.path.join(save_path, "detections_%d.pkl" % int(time.time()))
+    with open(det_boxs_file, 'wb') as f:
         cPickle.dump(all_boxes, f, cPickle.HIGHEST_PROTOCOL)
 
 
-    gen_onet_sample_data(data_dir,anno_file,save_file,prefix_path)
+    gen_onet_sample_data(data_dir,anno_file,det_boxs_file,prefix_path)
 
 
 
@@ -110,7 +120,7 @@ def gen_onet_sample_data(data_dir,anno_file,det_boxs_file,prefix):
         annotation = annotation.strip().split(' ')
         im_idx = os.path.join(prefix,annotation[0])
 
-        boxes = list(map(float, annotation[1:]))
+        boxes = list(map(float, annotation[1:5]))
         boxes = np.array(boxes, dtype=np.float32).reshape(-1, 4)
         im_idx_list.append(im_idx)
         gt_boxes_list.append(boxes)
@@ -137,6 +147,7 @@ def gen_onet_sample_data(data_dir,anno_file,det_boxs_file,prefix):
     for im_idx, dets, gts in zip(im_idx_list, det_boxes, gt_boxes_list):
         if image_done % 100 == 0:
             print("%d images done" % image_done)
+            print("pos: %d, neg: %d, part: %d" % (p_idx, n_idx, d_idx))
         image_done += 1
 
         if dets.shape[0] == 0:
@@ -146,9 +157,9 @@ def gen_onet_sample_data(data_dir,anno_file,det_boxs_file,prefix):
         dets[:, 0:4] = np.round(dets[:, 0:4])
         
         ### --> The same question in gen_Pnet_train_data.py
-        for box in gts:
-            box[2] = box[0] + box[2]
-            box[3] = box[1] + box[3]
+        #for box in gts:
+        #    box[2] = box[0] + box[2]
+        #    box[3] = box[1] + box[3]
         ###  ---  ###  
         
         for box in dets:
@@ -210,5 +221,5 @@ def model_store_path():
 
 if __name__ == '__main__':
 
-    #gen_onet_data(traindata_store, annotation_file, pnet_model_file, rnet_model_file, prefix_path, use_cuda)
-    gen_onet_sample_data(traindata_store, annotation_file, det_boxs_file, prefix_path)
+    gen_onet_data(traindata_store, annotation_file, pnet_model_file, rnet_model_file, prefix_path, use_cuda)
+    #gen_onet_sample_data(traindata_store, annotation_file, det_boxs_file, prefix_path)

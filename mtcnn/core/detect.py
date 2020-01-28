@@ -445,6 +445,7 @@ class MtcnnDetector(object):
         for i in range(num_boxes):
             tmp = np.zeros((tmph[i], tmpw[i], 3), dtype=np.uint8)
             tmp[dy[i]:edy[i]+1, dx[i]:edx[i]+1, :] = im[y[i]:ey[i]+1, x[i]:ex[i]+1, :]
+            #print(type(tmp), tmp.shape)
             crop_im = cv2.resize(tmp, (24, 24))
             crop_im_tensor = image_tools.convert_image_to_tensor(crop_im)
             # cropped_ims_tensors[i, :, :, :] = crop_im_tensor

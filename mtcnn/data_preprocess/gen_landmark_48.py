@@ -11,7 +11,7 @@ import time
 prefix_path = ''
 traindata_store = './data_set/train'
 #annotation_file = "./data_set/face_landmark/CNN_FacePoint/train/trainImageList.txt"
-annotation_file = "./data_set/face_landmark/trainImageList.txt"
+annotation_file = "./anno_store/anno_train.txt"
 
 def gen_data(anno_file, data_dir, prefix):
 
@@ -49,10 +49,11 @@ def gen_data(anno_file, data_dir, prefix):
 
         annotation = annotation.strip().split(' ')
 
-        assert len(annotation)==15,"each line should have 15 element"
+        assert len(annotation)==23,"each line should have 23 element"
 
-        im_path = os.path.join('./data_set/face_landmark/',annotation[0].replace("\\", "/"))
-
+        #im_path = os.path.join('./data_set/face_landmark/',annotation[0].replace("\\", "/"))
+        im_path = annotation[0]
+        
         gt_box = list(map(float, annotation[1:5]))
         # gt_box = [gt_box[0], gt_box[2], gt_box[1], gt_box[3]]
 
@@ -75,9 +76,9 @@ def gen_data(anno_file, data_dir, prefix):
             print("%d images done, landmark images: %d"%(idx,l_idx))
         # print(im_path)
         # print(gt_box)
-        x1, x2, y1, y2 = gt_box
-        gt_box[1] = y1
-        gt_box[2] = x2
+        x1, y1, x2, y2 = gt_box
+        #gt_box[1] = y1
+        #gt_box[2] = x2
         # time.sleep(5)
 
         # gt's width
@@ -106,7 +107,8 @@ def gen_data(anno_file, data_dir, prefix):
             offset_y1 = (y1 - ny1) / float(bbox_size)
             offset_x2 = (x2 - nx2) / float(bbox_size)
             offset_y2 = (y2 - ny2) / float(bbox_size)
-
+            
+            '''
             offset_left_eye_x = (landmark[0] - nx1) / float(bbox_size)
             offset_left_eye_y = (landmark[1] - ny1) / float(bbox_size)
 
@@ -121,8 +123,30 @@ def gen_data(anno_file, data_dir, prefix):
 
             offset_right_mouth_x = (landmark[8] - nx1) / float(bbox_size)
             offset_right_mouth_y = (landmark[9] - ny1) / float(bbox_size)
+            '''
+            
+            offset_left_eye_x = (landmark[0] - nx1) / float(bbox_size)
+            offset_left_eye_y = (landmark[1] - ny1) / float(bbox_size)
 
-
+            offset_right_eye_x = (landmark[2] - nx1) / float(bbox_size)
+            offset_right_eye_y = (landmark[3] - ny1) / float(bbox_size)
+            
+            offset_mouth_x =  (landmark[4] - nx1) / float(bbox_size)
+            offset_mouth_y =  (landmark[5] - ny1) / float(bbox_size)
+            
+            offset_left_ear1_x =  (landmark[6] - nx1) / float(bbox_size)
+            offset_left_ear1_y =  (landmark[7] - ny1) / float(bbox_size)
+            offset_left_ear2_x =  (landmark[8] - nx1) / float(bbox_size)
+            offset_left_ear2_y =  (landmark[9] - ny1) / float(bbox_size)
+            offset_left_ear3_x =  (landmark[10] - nx1) / float(bbox_size)
+            offset_left_ear3_y =  (landmark[11] - ny1) / float(bbox_size)
+            offset_right_ear1_x =  (landmark[12] - nx1) / float(bbox_size)
+            offset_right_ear1_y =  (landmark[13] - ny1) / float(bbox_size)
+            offset_right_ear2_x =  (landmark[14] - nx1) / float(bbox_size)
+            offset_right_ear2_y =  (landmark[15] - ny1) / float(bbox_size)
+            offset_right_ear3_x =  (landmark[16] - nx1) / float(bbox_size)
+            offset_right_ear3_y =  (landmark[17] - ny1) / float(bbox_size)
+            
             # cal iou
             iou = utils.IoU(crop_box.astype(np.float), np.expand_dims(gt_box.astype(np.float), 0))
             # print(iou)
@@ -130,9 +154,13 @@ def gen_data(anno_file, data_dir, prefix):
                 save_file = os.path.join(landmark_imgs_save_dir, "%s.jpg" % l_idx)
                 cv2.imwrite(save_file, resized_im)
 
-                f.write(save_file + ' -2 %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f \n' % \
+                f.write(save_file + ' -2 %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f \n' % \
                 (offset_x1, offset_y1, offset_x2, offset_y2, \
-                offset_left_eye_x,offset_left_eye_y,offset_right_eye_x,offset_right_eye_y,offset_nose_x,offset_nose_y,offset_left_mouth_x,offset_left_mouth_y,offset_right_mouth_x,offset_right_mouth_y))
+                offset_left_eye_x,offset_left_eye_y,offset_right_eye_x,offset_right_eye_y,offset_mouth_x,offset_mouth_y, \
+                offset_left_ear1_x,offset_left_ear1_y,offset_left_ear2_x,offset_left_ear2_y, \
+                offset_left_ear3_x, offset_left_ear3_y, offset_right_ear1_x, offset_right_ear1_y, \
+                offset_right_ear2_x, offset_right_ear2_y, offset_right_ear3_x, offset_right_ear3_y))
+                
                 # print(save_file)
                 # print(save_landmark_anno)
                 l_idx += 1

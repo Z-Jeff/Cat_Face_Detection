@@ -167,7 +167,7 @@ def train_onet(model_store_path, end_epoch,imdb,
     lossfn = LossFn()
     net = ONet(is_train=True)
     net.train()
-    print(use_cuda)
+    #print(use_cuda)
     if use_cuda:
         net.cuda()
 
@@ -203,6 +203,7 @@ def train_onet(model_store_path, end_epoch,imdb,
 
             cls_loss = lossfn.cls_loss(gt_label,cls_pred)
             box_offset_loss = lossfn.box_loss(gt_label,gt_bbox,box_offset_pred)
+            #print('landmark_loss: ', gt_landmark.shape, landmark_offset_pred.shape)
             landmark_loss = lossfn.landmark_loss(gt_label,gt_landmark,landmark_offset_pred)
 
             all_loss = cls_loss*0.8+box_offset_loss*0.6+landmark_loss*1.5

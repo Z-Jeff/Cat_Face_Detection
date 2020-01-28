@@ -189,7 +189,7 @@ class ONet(nn.Module):
         # bounding box regression
         self.conv6_2 = nn.Linear(256, 4)
         # lanbmark localization
-        self.conv6_3 = nn.Linear(256, 10)
+        self.conv6_3 = nn.Linear(256, 18)
         # weight initiation weih xavier
         self.apply(weights_init)
 

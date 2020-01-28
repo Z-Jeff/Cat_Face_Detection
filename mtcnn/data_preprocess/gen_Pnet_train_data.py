@@ -1,5 +1,4 @@
 """
-    2018-10-20 15:50:20
     generate positive, negative, positive images whose size are 12*12 and feed into PNet
 """
 import sys
@@ -13,7 +12,7 @@ from mtcnn.data_preprocess.utils import IoU
 prefix = ''
 anno_file = "./anno_store/anno_train.txt"
 #im_dir = "./data_set/face_detection/WIDERFACE/WIDER_train/WIDER_train/images"
-im_dir = "./data_set/face_detection/WIDER_train/WIDER_train/images"
+#im_dir = '../../data/data18748/train'
 pos_save_dir = "./data_set/train/12/positive"
 part_save_dir = "./data_set/train/12/part"
 neg_save_dir = './data_set/train/12/negative'
@@ -45,16 +44,16 @@ for annotation in annotations:
     annotation = annotation.strip().split(' ')
     im_path = os.path.join(prefix, annotation[0])
     print(im_path)
-    bbox = list(map(float, annotation[1:]))
+    bbox = list(map(float, annotation[1:5]))
     boxes = np.array(bbox, dtype=np.int32).reshape(-1, 4)
     
     ###!!! There is an error here !!!###
     # boxes is [x1, y1, dx, dy] not [x1, y1, x2, y2]
     # add the fllowing code to correct this:
     #print('befor', boxes)
-    for box in boxes:
-        box[2] = box[0] + box[2]
-        box[3] = box[1] + box[3]
+    #for box in boxes:
+    #    box[2] = box[0] + box[2]
+    #    box[3] = box[1] + box[3]
     #print('after', boxes)
     
     img = cv2.imread(im_path)

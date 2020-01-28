@@ -24,7 +24,7 @@ pnet_model_file = './model_store/pnet_epoch_10.pt'
 annotation_file = './anno_store/anno_train.txt'
 use_cuda = True
 
-det_boxs_file = './model_store/detections_1579169803.pkl'
+det_boxs_file = './model_store/detections_from_pnet.pkl'
 
 def gen_rnet_data(data_dir, anno_file, pnet_model_file, prefix_path='', use_cuda=True, vis=False):
 
@@ -38,7 +38,12 @@ def gen_rnet_data(data_dir, anno_file, pnet_model_file, prefix_path='', use_cuda
     :return:
     """
 
-
+    if os.path.exists(det_boxs_file):
+        print('using existing %s' % det_boxs_file)
+        gen_rnet_sample_data(traindata_store, annotation_file, det_boxs_file, prefix_path)
+        return
+    
+    print('generating new %s' % det_boxs_file)
     # load trained pnet model
     pnet, _, _ = create_mtcnn_net(p_model_path=pnet_model_file, use_cuda=use_cuda)
     mtcnn_detector = MtcnnDetector(pnet=pnet,min_face_size=12)
@@ -85,12 +90,13 @@ def gen_rnet_data(data_dir, anno_file, pnet_model_file, prefix_path='', use_cuda
     if not os.path.exists(save_path):
         os.mkdir(save_path)
 
-    save_file = os.path.join(save_path, "detections_%d.pkl" % int(time.time()))
-    with open(save_file, 'wb') as f:
+    #save_file = os.path.join(save_path, "detections_from_pnet.pkl" )
+    
+    with open(det_boxs_file, 'wb') as f:
         cPickle.dump(all_boxes, f, cPickle.HIGHEST_PROTOCOL)
 
 
-    gen_rnet_sample_data(data_dir, anno_file, save_file, prefix_path)
+    gen_rnet_sample_data(data_dir, anno_file, det_boxs_file, prefix_path)
 
 
 
@@ -134,7 +140,7 @@ def gen_rnet_sample_data(data_dir, anno_file, det_boxs_file, prefix_path):
         im_idx = os.path.join(prefix_path,annotation[0])
         # im_idx = annotation[0]
 
-        boxes = list(map(float, annotation[1:]))
+        boxes = list(map(float, annotation[1:5]))
         boxes = np.array(boxes, dtype=np.float32).reshape(-1, 4)
         im_idx_list.append(im_idx)
         gt_boxes_list.append(boxes)
@@ -170,9 +176,9 @@ def gen_rnet_sample_data(data_dir, anno_file, det_boxs_file, prefix_path):
 
         gts = np.array(gts, dtype=np.float32).reshape(-1, 4)
         ### --> The same question in gen_Pnet_train_data.py
-        for box in gts:
-            box[2] = box[0] + box[2]
-            box[3] = box[1] + box[3]
+        #for box in gts:
+        #    box[2] = box[0] + box[2]
+        #    box[3] = box[1] + box[3]
         ###  ---  ###  
         if image_done % 100 == 0:
             print("%d images done" % image_done)
@@ -252,6 +258,6 @@ def model_store_path():
 
 if __name__ == '__main__':
 
-    #gen_rnet_data(traindata_store, annotation_file, pnet_model_file, prefix_path, use_cuda)
-    gen_rnet_sample_data(traindata_store, annotation_file, det_boxs_file, prefix_path)
+    gen_rnet_data(traindata_store, annotation_file, pnet_model_file, prefix_path, use_cuda)
+    #gen_rnet_sample_data(traindata_store, annotation_file, det_boxs_file, prefix_path)
     

@@ -11,7 +11,7 @@ model_store_path = './model_store'
 end_epoch = 10
 frequent = 200
 lr = 0.01
-batch_size = 5120
+batch_size = 5120 # consuming about 9622MiB memory in GPU
 use_cuda = True
 
 

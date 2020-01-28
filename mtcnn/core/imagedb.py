@@ -113,14 +113,16 @@ class ImageDB(object):
                 imdb_['label'] = int(label)
                 imdb_['flipped'] = False
                 imdb_['bbox_target'] = np.zeros((4,))
-                imdb_['landmark_target'] = np.zeros((10,))
+                imdb_['landmark_target'] = np.zeros((18,))
                 if len(annotation[2:])==4:
                     bbox_target = annotation[2:6]
                     imdb_['bbox_target'] = np.array(bbox_target).astype(float)
-                if len(annotation[2:])==14:
+                #if len(annotation[2:])==14:
+                if len(annotation[2:])==22:
                     bbox_target = annotation[2:6]
                     imdb_['bbox_target'] = np.array(bbox_target).astype(float)
                     landmark = annotation[6:]
+                    #print('landmark', len(landmark))
                     imdb_['landmark_target'] = np.array(landmark).astype(float)
             imdb.append(imdb_)
 
@@ -146,15 +148,19 @@ class ImageDB(object):
             m_bbox[0], m_bbox[2] = -m_bbox[2], -m_bbox[0]
 
             landmark_ = imdb_['landmark_target'].copy()
-            landmark_ = landmark_.reshape((5, 2))
+            #landmark_ = landmark_.reshape((5, 2))
+            #print('landmark_', len(landmark_))
+            landmark_ = landmark_.reshape((9, 2))
             landmark_ = np.asarray([(1 - x, y) for (x, y) in landmark_])
-            landmark_[[0, 1]] = landmark_[[1, 0]]
-            landmark_[[3, 4]] = landmark_[[4, 3]]
-
+            landmark_[[0, 1]] = landmark_[[1, 0]] # left_eye  <-> right_eye
+            landmark_[[3, 8]] = landmark_[[8, 3]] # left_ear1 <-> right_ear3
+            landmark_[[4, 7]] = landmark_[[7, 4]] # left_ear2 <-> right_ear2
+            landmark_[[5, 6]] = landmark_[[6, 5]] # left_ear3 <-> right_ear1
+            
             item = {'image': imdb_['image'],
                      'label': imdb_['label'],
                      'bbox_target': m_bbox,
-                     'landmark_target': landmark_.reshape((10)),
+                     'landmark_target': landmark_.reshape((18)),
                      'flipped': True}
 
             imdb.append(item)

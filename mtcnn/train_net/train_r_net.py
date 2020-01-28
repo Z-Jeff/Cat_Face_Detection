@@ -52,7 +52,7 @@ if __name__ == '__main__':
     model_store_path = "./model_store"
     end_epoch = 10
     lr = 0.01
-    batch_size = 20
+    batch_size = 4096
 
     use_cuda = True
     frequent = 200
