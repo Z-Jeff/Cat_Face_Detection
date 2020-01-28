@@ -121,11 +121,13 @@ def vis_face(im_array, dets, landmarks, save_name):
     if landmarks is not None:
         for i in range(landmarks.shape[0]):
             landmarks_one = landmarks[i, :]
-            landmarks_one = landmarks_one.reshape((5, 2))
-            for j in range(5):
+            #landmarks_one = landmarks_one.reshape((5, 2))
+            landmarks_one = landmarks_one.reshape((9, 2))
+            #for j in range(5):
+            for j in range(9):
                 # pylab.scatter(landmarks_one[j, 0], landmarks_one[j, 1], c='yellow', linewidths=0.1, marker='x', s=5)
 
-                cir1 = Circle(xy=(landmarks_one[j, 0], landmarks_one[j, 1]), radius=2, alpha=0.4, color="red")
+                cir1 = Circle(xy=(landmarks_one[j, 0], landmarks_one[j, 1]), radius=4, alpha=0.4, color="red")
                 pylab.gca().add_patch(cir1)
                 # plt.gca().text(bbox[0], bbox[1] - 2,
                 #                '{:.3f}'.format(score),

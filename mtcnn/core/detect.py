@@ -647,6 +647,15 @@ class MtcnnDetector(object):
                                  align_landmark_topy + keep_landmark[:, 7] * bh,
                                  align_landmark_topx + keep_landmark[:, 8] * bw,
                                  align_landmark_topy + keep_landmark[:, 9] * bh,
+                                 
+                                 align_landmark_topx + keep_landmark[:, 10] * bw,
+                                 align_landmark_topy + keep_landmark[:, 11] * bh,
+                                 align_landmark_topx + keep_landmark[:, 12] * bw,
+                                 align_landmark_topy + keep_landmark[:, 13] * bh,
+                                 align_landmark_topx + keep_landmark[:, 14] * bw,
+                                 align_landmark_topy + keep_landmark[:, 15] * bh,
+                                 align_landmark_topx + keep_landmark[:, 16] * bw,
+                                 align_landmark_topy + keep_landmark[:, 17] * bh,
                                  ])
 
         landmark_align = landmark.T
