@@ -1,13 +1,6 @@
-# mtcnn-pytorch
-# Descriptions in chinese
-  https://blog.csdn.net/Sierkinhane/article/details/83308658
+# Cat face detection using MTCNN
 
 # results:
-
-![](https://github.com/Sierkinhane/mtcnn-pytorch/blob/master/results/r_1.jpg)
-![](https://github.com/Sierkinhane/mtcnn-pytorch/blob/master/results/r_2.jpg)
-![](https://github.com/Sierkinhane/mtcnn-pytorch/blob/master/results/r_3.jpg)
-![](https://github.com/Sierkinhane/mtcnn-pytorch/blob/master/results/r_4.jpg)
 
 
 
@@ -15,9 +8,8 @@
   * run > python mtcnn_test.py
  
 # Training data prepraring
-  * download [WIDER FACE](https://pan.baidu.com/s/1sJTO7TcQ2576RUqR_IIhbQ) (passcode:lsl3) face detection data then store it into ./data_set/face_detection
-    * run > python ./anno_store/tool/format/transform.py change .mat(wider_face_train.mat) into .txt(anno_train.txt)
-  * download [CNN_FacePoint](http://mmlab.ie.cuhk.edu.hk/archive/CNN_FacePoint.htm) face detection and landmark data then store it into ./data_set/face_landmark
+  * download [cat face dataset for landmark](https://static.leiphone.com/cat_face.zip), then unzip it into ./data_set/original/
+    * run > python ./anno_store/tool/transform.py change train.csv into .txt(anno_train.txt)
 
 # Training
   * preparing data for P-Net
@@ -41,3 +33,4 @@
     
  # Citation
    [DFace](https://github.com/kuaikuaikim/DFace)
+   [mtcnn-pytorch](https://github.com/Sierkinhane/mtcnn-pytorch)
