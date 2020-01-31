@@ -13,11 +13,11 @@ import pandas as pd
 
 # original images path
 #path_to_image = './data_set/face_detection/WIDERFACE/WIDER_train/WIDER_train/images'
-path_to_image = '../../data/data18748/train'
+path_to_image = './dataset/original/train'
 
 # csv label file path
 #file_to_label = './data_set/face_detection/WIDERFACE/wider_face_split/wider_face_split/wider_face_train.mat'
-file_to_label = '../../data/data18748/train.csv'
+file_to_label = './dataset/original/train.csv'
 
 #target file path
 target_file = './anno_store/anno_train.txt'
