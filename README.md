@@ -2,7 +2,7 @@
 
 # results:
 ![](https://github.com/Z-Jeff/Cat_Face_Detection/blob/master/result.png)
-
+  * It doesn't perform well, only for reference
 
 # Test an image
   * run > python mtcnn_test.py
