@@ -16,12 +16,12 @@ import mtcnn.core.vision as vision
 prefix_path = ''
 traindata_store = './data_set/train'
 pnet_model_file = './model_store/pnet_epoch_10.pt'
-rnet_model_file = './model_store/rnet_epoch_10.pt'
+rnet_model_file = './model_store/rnet_epoch_30.pt'
 #annotation_file = './anno_store/anno_train_test.txt'
 annotation_file = './anno_store/anno_train.txt'
 use_cuda = True
 
-det_boxs_file = './model_store/detections_from_rnet.pkl'
+det_boxs_file = './model_store/detections_from_rnet30.pkl'
 
 def gen_onet_data(data_dir, anno_file, pnet_model_file, rnet_model_file, prefix_path='', use_cuda=True, vis=False):
     

@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     annotation_file = "./anno_store/imglist_anno_24.txt"
     model_store_path = "./model_store"
-    end_epoch = 10
+    end_epoch = 30
     lr = 0.01
     batch_size = 4096
 

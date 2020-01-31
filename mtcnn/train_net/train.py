@@ -206,8 +206,9 @@ def train_onet(model_store_path, end_epoch,imdb,
             #print('landmark_loss: ', gt_landmark.shape, landmark_offset_pred.shape)
             landmark_loss = lossfn.landmark_loss(gt_label,gt_landmark,landmark_offset_pred)
 
-            all_loss = cls_loss*0.8+box_offset_loss*0.6+landmark_loss*1.5
-
+            #all_loss = cls_loss*0.8+box_offset_loss*0.6+landmark_loss*1.5
+            all_loss = cls_loss*0.8+box_offset_loss*0.6+landmark_loss*20.0
+            
             if batch_idx%frequent==0:
                 accuracy=compute_accuracy(cls_pred,gt_label)
 

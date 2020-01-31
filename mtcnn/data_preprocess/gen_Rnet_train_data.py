@@ -212,7 +212,9 @@ def gen_rnet_sample_data(data_dir, anno_file, det_boxs_file, prefix_path):
             #print('###--->IOU:', np.max(Iou))
             # save negative images and write label
             # Iou with all gts must below 0.3
-            if np.max(Iou) < 0.3 and neg_num < 60:
+            #if np.max(Iou) < 0.3 and neg_num < 60:
+            # ‘neg_num’ control the negative samples per images
+            if np.max(Iou) < 0.3 and neg_num < 10:
                 # save the examples
                 save_file = os.path.join(neg_save_dir, "%s.jpg" % n_idx)
                 # print(save_file)
@@ -234,7 +236,8 @@ def gen_rnet_sample_data(data_dir, anno_file, det_boxs_file, prefix_path):
                 offset_y2 = (y2 - y_bottom) / float(height)
 
                 # save positive and part-face images and write labels
-                if np.max(Iou) >= 0.65:
+                #if np.max(Iou) >= 0.65:
+                if np.max(Iou) >= 0.55:
                     save_file = os.path.join(pos_save_dir, "%s.jpg" % p_idx)
                     f1.write(save_file + ' 1 %.2f %.2f %.2f %.2f\n' % (
                         offset_x1, offset_y1, offset_x2, offset_y2))
