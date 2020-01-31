@@ -1,0 +1,1 @@
+wget https://static.leiphone.com/cat_face.zip
